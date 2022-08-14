@@ -39,6 +39,7 @@ class EditActivityViewController: UIViewController {
 
         picker.frame.size = CGSize(width: 0, height: 300)
         picker.preferredDatePickerStyle = .wheels
+        picker.locale = Locale(identifier: "th")
     }
     
 //MARK: - Button Actions
@@ -48,7 +49,6 @@ class EditActivityViewController: UIViewController {
         } else {
             let alert = UIAlertController(title: "Alert", message: "Title cannot be empty.", preferredStyle: .alert)
             self.present(alert, animated: true, completion: nil)
-            
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 alert.dismiss(animated: true, completion: nil)
             }

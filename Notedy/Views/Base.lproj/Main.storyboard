@@ -191,12 +191,12 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="dateTF" destination="qvl-3a-ls8" id="WbG-W6-TLA"/>
-                        <outlet property="detailTF" destination="1GU-fn-hLU" id="zTZ-yB-hdi"/>
+                        <outlet property="dateTextField" destination="qvl-3a-ls8" id="WbG-W6-TLA"/>
+                        <outlet property="detailTextField" destination="1GU-fn-hLU" id="zTZ-yB-hdi"/>
                         <outlet property="doneButton" destination="u9J-Rf-5eM" id="vLw-9l-4cU"/>
-                        <outlet property="locationTF" destination="bUS-dI-doB" id="c5w-B0-fSC"/>
-                        <outlet property="timeTF" destination="Kaf-dS-4Sy" id="SNF-mC-xYa"/>
-                        <outlet property="titleTF" destination="GYZ-as-DfO" id="SEb-DN-r5J"/>
+                        <outlet property="locationTextField" destination="bUS-dI-doB" id="c5w-B0-fSC"/>
+                        <outlet property="timeTextField" destination="Kaf-dS-4Sy" id="SNF-mC-xYa"/>
+                        <outlet property="titleTextField" destination="GYZ-as-DfO" id="SEb-DN-r5J"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Ce-Hw-KAd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

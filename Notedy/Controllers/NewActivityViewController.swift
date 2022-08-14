@@ -10,39 +10,39 @@ import RealmSwift
 
 class NewActivityViewController: UIViewController {
 
-    @IBOutlet weak var titleTF: UITextField!
-    @IBOutlet weak var locationTF: UITextField!
-    @IBOutlet weak var detailTF: UITextField!
+    @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var locationTextField: UITextField!
+    @IBOutlet weak var detailTextField: UITextField!
     
-    @IBOutlet weak var dateTF: UITextField!
-    @IBOutlet weak var timeTF: UITextField!
+    @IBOutlet weak var dateTextField: UITextField!
+    @IBOutlet weak var timeTextField: UITextField!
     
     @IBOutlet weak var doneButton: UIBarButtonItem!
     
     let realm = try! Realm()
     let picker = UIDatePicker()
     var tempTextField = UITextField()
-    var pickerMode: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "New Activity"
         
-        dateTF.delegate = self
-        timeTF.delegate = self
-        titleTF.delegate = self
+        dateTextField.delegate = self
+        timeTextField.delegate = self
+        titleTextField.delegate = self
         
-        dateTF.text = formatDate(date: Date(), mode: "date")
-        timeTF.text = formatDate(date: Date(), mode: "time")
+        dateTextField.text = formatDate(date: Date(), mode: .date)
+        timeTextField.text = formatDate(date: Date(), mode: .time)
         
         picker.frame.size = CGSize(width: 0, height: 300)
         picker.preferredDatePickerStyle = .wheels
+        picker.locale = Locale(identifier: "TH")
         
     }
     
     @IBAction func donePressed(_ sender: UIBarButtonItem) {
-        if titleTF.text != ""{
+        if titleTextField.text != ""{
             saveActivity()
         } else {
             let alert = UIAlertController(title: "Alert", message: "Title cannot be empty.", preferredStyle: .alert)
@@ -59,18 +59,18 @@ class NewActivityViewController: UIViewController {
         
         let newActivity = Activity()
         
-        newActivity.title = titleTF.text!
+        newActivity.title = titleTextField.text!
         
-        if let location = locationTF.text{
+        if let location = locationTextField.text{
             newActivity.location = location
         }
         
-        if let detail = detailTF.text{
+        if let detail = detailTextField.text{
             newActivity.detail = detail
         }
         
-        newActivity.time = timeTF.text!
-        newActivity.date = dateTF.text!
+        newActivity.time = timeTextField.text!
+        newActivity.date = dateTextField.text!
         
         do{
             try realm.write {
@@ -81,8 +81,6 @@ class NewActivityViewController: UIViewController {
             print("Error saving data. \(error)")
         }
     }
-    
-    
 }
 
 
@@ -90,11 +88,11 @@ class NewActivityViewController: UIViewController {
 extension NewActivityViewController: UITextFieldDelegate{
         
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField == dateTF{
-            openDatePicker(with: textField)
+        if textField == dateTextField{
+            openDatePicker(with: textField, mode: .date)
         }
-        if textField == timeTF{
-            openTimePicker(with: textField)
+        if textField == timeTextField{
+            openDatePicker(with: textField, mode: .time)
         }
     }
     
@@ -102,53 +100,50 @@ extension NewActivityViewController: UITextFieldDelegate{
         
         //open datePicker with valued textField
         let dateFormatter = DateFormatter()
-        if textField == dateTF{
+        if textField == dateTextField{
             dateFormatter.dateStyle = .medium
             picker.date = dateFormatter.date(from: textField.text!)!
         }
         
-        if textField == timeTF{
+        if textField == timeTextField{
             dateFormatter.dateFormat = "HH:mm"
             picker.date = dateFormatter.date(from: textField.text!)!
         }
         return true
     }
     
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == titleTextField{
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 //MARK: - DatePicker
 extension NewActivityViewController{
     
-    func openDatePicker(with textField: UITextField){
+    func openDatePicker(with textField: UITextField, mode: UIDatePicker.Mode){
         tempTextField = textField
-        picker.datePickerMode = .date
-        pickerMode = "date"
-        picker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
-        textField.inputView = picker
-        textField.inputAccessoryView = setUpToolBar()
-    }
-    
-    func openTimePicker(with textField: UITextField){
-        tempTextField = textField
-        picker.datePickerMode = .time
-        pickerMode = "time"
+        picker.datePickerMode = mode
         picker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
         textField.inputView = picker
         textField.inputAccessoryView = setUpToolBar()
     }
 
     
-    
     @objc func dateChange(datePicker: UIDatePicker){
-        tempTextField.text = formatDate(date: datePicker.date, mode: pickerMode)
+        tempTextField.text = formatDate(date: datePicker.date, mode: datePicker.datePickerMode)
     }
     
-    func formatDate(date: Date, mode: String) -> String{
+    func formatDate(date: Date, mode: UIDatePicker.Mode) -> String{
         let formatter = DateFormatter()
-        if mode == "date"{
+        if mode == .date{
             formatter.dateStyle = .medium
         }
-        if mode == "time"{
+        if mode == .time{
             formatter.dateFormat = "HH:mm"
         }
         return formatter.string(from: date)
@@ -175,14 +170,12 @@ extension NewActivityViewController{
     @objc func cancelBtnPressed(){
         tempTextField.resignFirstResponder()
         tempTextField = UITextField()
-        pickerMode = ""
     }
     
     @objc func doneBtnPressed(){
         if let datePicker = tempTextField.inputView as? UIDatePicker{
-            tempTextField.text = formatDate(date: datePicker.date, mode: pickerMode)
+            tempTextField.text = formatDate(date: datePicker.date, mode: datePicker.datePickerMode)
             tempTextField = UITextField()
-            pickerMode = ""
         }
         view.endEditing(true)
     }
